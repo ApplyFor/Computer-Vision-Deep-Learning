@@ -117,3 +117,12 @@ class Ui_widget(object):
         self.pushButton_11.setText(_translate("widget", "2.2 Show Words Vertically"))
         self.groupBox_5.setTitle(_translate("widget", "3. Stereo Disparity Map"))
         self.pushButton_12.setText(_translate("widget", "3.1 Stereo Disparity Map"))
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    widget = QtWidgets.QWidget()
+    ui = Ui_widget()
+    ui.setupUi(widget)
+    widget.show()
+    sys.exit(app.exec_())
