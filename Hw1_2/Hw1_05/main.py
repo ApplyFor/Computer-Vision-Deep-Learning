@@ -176,6 +176,7 @@ class GUI(QtWidgets.QWidget):
             print('No file selected')
             return
 
+        self.ui.label1.setText("")
         self.mypixmap = QtGui.QPixmap(self.filename)
         
         if self.mypixmap.isNull():
@@ -185,7 +186,6 @@ class GUI(QtWidgets.QWidget):
         self.ui.label2.setPixmap(self.mypixmap)
 
     def show_data_augmentation(self):
-        
         if not self.filename:
             print('No file loaded')
             return
@@ -225,6 +225,7 @@ class GUI(QtWidgets.QWidget):
         plt.show()
 
     def show_accuracy_and_loss(self):
+        self.ui.label1.setText("")
         self.mypixmap = QtGui.QPixmap('plot.png')
         if self.mypixmap.isNull():
             print('Load image failed')
