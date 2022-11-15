@@ -169,6 +169,8 @@ class GUI(QtWidgets.QWidget):
         self.ui.pushButton4.clicked.connect(self.show_data_augmentation)
         self.ui.pushButton5.clicked.connect(self.show_accuracy_and_loss)
         self.ui.pushButton6.clicked.connect(self.inference)
+
+        self.filename = []
     
     def load_image(self):
         self.filename, self.filetype = QtWidgets.QFileDialog.getOpenFileName(self, '開啟檔案', os.getcwd(), 'All Files (*);;Image Files (*.png *.jpg *.jpeg *.bmp)')
