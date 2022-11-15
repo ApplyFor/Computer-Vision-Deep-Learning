@@ -7,10 +7,10 @@ from UI import Ui_widget #UI.py
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 
-import os
+import os, re
 
-Q1_images = []
-Q2_images = []
+images = []
+'''
 def load_images():
     #可以直接存取無法直接修改
     global Q1_images
@@ -31,6 +31,7 @@ def load_images():
         img = cv2.imread(os.path.join(folder, filename)) #os.path.join folder\filename
         if img is not None:
             Q2_images.append(img)
+'''
 
 imL = []
 def load_image_L():
@@ -45,13 +46,17 @@ def load_image_R():
     imR = cv2.imread(r'Dataset_CvDl_Hw1/Q3_Image/imR.png')
 
 def find_corners(): #11,8(內部)
+    if not images:
+        print("======NO IMAGES=====")
+        return
+
     w = 11
     h = 8
     #TERM_CRITERIA_EPS 誤差满足epsilon停止
     #TERM_CRITERIA_MAX_ITER 迭代次數超過max_iter停止
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.1) #迭代停止(type,max_iter,epsilon)
 
-    for img in Q1_images:
+    for img in images:
         #ret retval return value
         ret, corners = cv2.findChessboardCorners(img, (w,h), None) #Find chessboard corners
         if ret == True:
@@ -67,6 +72,10 @@ def find_corners(): #11,8(內部)
             cv2.destroyAllWindows()
 
 def find_intrinsic():
+    if not images:
+        print("======NO IMAGES=====")
+        return
+
     w = 11
     h = 8
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.1)
@@ -82,7 +91,7 @@ def find_intrinsic():
     objpoints = [] #3D points in real world space
     imgpoints = [] #2D points in image plane
 
-    for img in Q1_images:
+    for img in images:
         ret, corners = cv2.findChessboardCorners(img, (w,h), None) #Find chessboard corners
         if ret == True:
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY);
@@ -100,6 +109,10 @@ def find_intrinsic():
     print(mtx)
 
 def find_extrinsic(number):
+    if not images:
+        print("======NO IMAGES=====")
+        return
+
     w = 11
     h = 8
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.1)
@@ -109,7 +122,7 @@ def find_extrinsic(number):
     objpoints = [] 
     imgpoints = []
 
-    for img in Q1_images:
+    for img in images:
         ret, corners = cv2.findChessboardCorners(img, (w,h), None)
         if ret == True:
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY);
@@ -125,6 +138,10 @@ def find_extrinsic(number):
     print(E)
 
 def find_distortion():
+    if not images:
+        print("======NO IMAGES=====")
+        return
+
     w = 11
     h = 8
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.1)
@@ -134,7 +151,7 @@ def find_distortion():
     objpoints = []
     imgpoints = []
 
-    for img in Q1_images:
+    for img in images:
         ret, corners = cv2.findChessboardCorners(img, (w,h), None)
         if ret == True:
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY);
@@ -147,6 +164,10 @@ def find_distortion():
     print(dist)
 
 def show_result():
+    if not images:
+        print("======NO IMAGES=====")
+        return
+
     w = 11
     h = 8
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.1)
@@ -156,7 +177,7 @@ def show_result():
     objpoints = []
     imgpoints = []
 
-    for img in Q1_images:
+    for img in images:
         ret, corners = cv2.findChessboardCorners(img, (w,h), None)
         if ret == True:
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY);
@@ -166,7 +187,7 @@ def show_result():
 
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
-    for img in Q1_images:
+    for img in images:
         h, w = img.shape[:2]
         newcameramtx, roi = cv2.getOptimalNewCameraMatrix(mtx, dist, (w, h), 1, (w, h))
 
@@ -197,6 +218,10 @@ def augmented_reality(image, projectpoints):
             (0, 0, 255), 10)
 
 def show_words_on_board(word):
+    if not images:
+        print("======NO IMAGES=====")
+        return
+
     w = 11
     h = 8
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.1)
@@ -217,7 +242,7 @@ def show_words_on_board(word):
         #print(objectpoints)
         i += 1
 
-    for img in Q2_images:
+    for img in images:
         ret, corners = cv2.findChessboardCorners(img, (w,h), None)
         if ret == True:
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY);
@@ -228,7 +253,7 @@ def show_words_on_board(word):
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
     i = 0 #index for rotation vectors and translation vectors
-    for img in Q2_images:
+    for img in images:
         tmp = img.copy()
         for word_frame in objectpoints:
             for line in word_frame: #(2, 3)
@@ -247,6 +272,10 @@ def show_words_on_board(word):
         i += 1
 
 def show_words_vertically(word):
+    if not images:
+        print("======NO IMAGES=====")
+        return
+
     w = 11
     h = 8
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.1)
@@ -267,7 +296,7 @@ def show_words_vertically(word):
         #print(objectpoints)
         i += 1
 
-    for img in Q2_images:
+    for img in images:
         ret, corners = cv2.findChessboardCorners(img, (w,h), None)
         if ret == True:
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY);
@@ -278,7 +307,7 @@ def show_words_vertically(word):
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
     i = 0 #index for rotation vectors and translation vectors
-    for img in Q2_images:
+    for img in images:
         tmp = img.copy()
         for word_frame in objectpoints:
             for line in word_frame: #(2, 3)
@@ -368,20 +397,41 @@ class GUI(QtWidgets.QWidget):
         self.ui = Ui_widget()
         self.ui.setupUi(self)
 
-        self.ui.pushButton.clicked.connect(load_images)
+        self.ui.pushButton.clicked.connect(self.load_images)
         self.ui.pushButton_2.clicked.connect(load_image_L)
         self.ui.pushButton_3.clicked.connect(load_image_R)
 
         self.ui.pushButton_4.clicked.connect(find_corners)
         self.ui.pushButton_5.clicked.connect(find_intrinsic)
-        self.ui.pushButton_7.clicked.connect(self.extrinsic)
-        self.ui.pushButton_8.clicked.connect(find_distortion)
-        self.ui.pushButton_9.clicked.connect(show_result)
+        self.ui.pushButton_6.clicked.connect(self.extrinsic)
+        self.ui.pushButton_7.clicked.connect(find_distortion)
+        self.ui.pushButton_8.clicked.connect(show_result)
 
-        self.ui.pushButton_10.clicked.connect(self.board)
-        self.ui.pushButton_11.clicked.connect(self.vertical)
+        self.ui.pushButton_9.clicked.connect(self.board)
+        self.ui.pushButton_10.clicked.connect(self.vertical)
 
-        self.ui.pushButton_12.clicked.connect(stereo_disparity_map)
+        self.ui.pushButton_11.clicked.connect(stereo_disparity_map)
+
+    def load_images(self):
+        global images
+        self.folder = QtWidgets.QFileDialog.getExistingDirectory(self, '選擇資料夾', os.getcwd())
+        if not self.folder:
+            print("=====CANCEL=====")
+            return
+        print("=====LOAD ALL IMAGES IN THE FOLDER=====")
+        for file in os.listdir(self.folder): #取得指定目錄中所有的檔案與子目錄名稱
+            print(os.path.join(self.folder, file), end=" ")
+            imagetype = [r".*\.png$", r".*\.jpg$", r".*\.jpeg$", r".*\.bmp$"] #正規表達式 https://regex101.com/
+            for filetype in imagetype:
+                regex = re.compile(filetype)
+                filename = regex.findall(file)
+                if not filename:
+                    continue
+                img = cv2.imread(os.path.join(self.folder, filename[0])) #os.path.join folder\filename
+                if img is not None:
+                    images.append(img)
+                    print("LOADED")
+        print()
 
     def extrinsic(self):
         num = self.ui.comboBox.currentIndex()
