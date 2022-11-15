@@ -391,6 +391,25 @@ class disparity_map():
 
         cv2.destroyAllWindows()
 
+#https://stackoverflow.com/questions/2294493/how-to-get-the-position-of-a-character-in-python
+def tryint(s):
+    try:
+        return int(s)
+    except:
+        return s
+def alphanum_key(s):
+    """ 
+    Turn a string into a list of string and number chunks.
+    "z23a" -> ["z", 23, "a"]
+    """
+    return [ tryint(c) for c in re.split('([0-9]+)', s) ]
+
+def sort_nicely(l):
+    """
+    Sort the given list in the way that humans expect.
+    """
+    l.sort(key=alphanum_key)
+
 class GUI(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
@@ -419,7 +438,9 @@ class GUI(QtWidgets.QWidget):
             print("=====CANCEL=====")
             return
         print("=====LOAD ALL IMAGES IN THE FOLDER=====")
-        for file in os.listdir(self.folder): #取得指定目錄中所有的檔案與子目錄名稱
+        dir_ = os.listdir(self.folder) #取得指定目錄中所有的檔案與子目錄名稱
+        sort_nicely(dir_)
+        for file in dir_:
             print(os.path.join(self.folder, file), end=" ")
             imagetype = [r".*\.png$", r".*\.jpg$", r".*\.jpeg$", r".*\.bmp$"] #正規表達式 https://regex101.com/
             for filetype in imagetype:
