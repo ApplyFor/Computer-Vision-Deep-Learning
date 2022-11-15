@@ -25,6 +25,7 @@ from tensorflow.keras.preprocessing import image
 
 import random
 
+model = None
 def show_train_images():
     label = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.cifar10.load_data()
@@ -237,6 +238,10 @@ class GUI(QtWidgets.QWidget):
 
     def inference(self):
         global model
+        if not model:
+            print('No model loaded')
+            return
+
         label = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
         if not self.filename:
             print('No file loaded')
@@ -245,8 +250,6 @@ class GUI(QtWidgets.QWidget):
         array = image.img_to_array(test_image)
         x = np.expand_dims(array, axis =0) #(1,w,h)
         x/= 255
-
-        model = tf.keras.models.load_model('model.pth')
 
         predictions = model.predict(x)
         #print(predictions)
