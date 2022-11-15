@@ -433,6 +433,7 @@ class GUI(QtWidgets.QWidget):
 
     def load_images(self):
         global images
+        images = []
         self.folder = QtWidgets.QFileDialog.getExistingDirectory(self, '選擇資料夾', os.getcwd())
         if not self.folder:
             print("=====CANCEL=====")
