@@ -391,7 +391,7 @@ class disparity_map():
 
         cv2.destroyAllWindows()
 
-#https://stackoverflow.com/questions/2294493/how-to-get-the-position-of-a-character-in-python
+#https://stackoverflow.com/questions/4623446/how-do-you-sort-files-numerically
 def tryint(s):
     try:
         return int(s)
