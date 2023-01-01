@@ -301,10 +301,22 @@ def reconstruction_error_computation(image, reconstruct):
 
     RE = []
     for i in range(len(image)):
-        origin_gray = cv2.cvtColor(image[i], cv2.COLOR_RGB2GRAY)
-        reconstruction_gray = cv2.cvtColor(reconstruct[i], cv2.COLOR_RGB2GRAY)
-        error = abs(origin_gray - reconstruction_gray)
-        RE.append(np.sum(error))
+        #numpy overflow
+        origin_gray = cv2.cvtColor(image[i], cv2.COLOR_RGB2GRAY).tolist()
+        reconstruction_gray = cv2.cvtColor(reconstruct[i], cv2.COLOR_RGB2GRAY).tolist()
+        #print(np.shape(origin_gray), np.shape(reconstruction_gray))
+
+        total = 0
+
+        
+        for i in range(np.shape(reconstruction_gray)[0]):
+            for j in range(np.shape(reconstruction_gray)[1]):
+                error = origin_gray[i][j] - reconstruction_gray[i][j]
+                error = error ** 2
+                total += error
+        
+        total = total ** 0.5
+        RE.append(total)
 
     print('reconstruction error:')
     #print(RE)
